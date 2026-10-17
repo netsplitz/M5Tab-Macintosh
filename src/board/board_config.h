@@ -5,16 +5,19 @@
  * at compile time based on the BOARD_* macro defined by the active
  * PlatformIO environment in platformio.ini.
  *
- * Exactly one of BOARD_M5STACK_TAB5, BOARD_WAVESHARE_P4_101, or the
- * host-test-only BOARD_HOST_SCALE1 must be set.
+ * Exactly one of BOARD_M5STACK_TAB5, BOARD_WAVESHARE_P4_101,
+ * BOARD_WAVESHARE_P4_OLIMEX640, or the host-test-only BOARD_HOST_SCALE1
+ * must be set.
  */
 #pragma once
 
-#if !defined(BOARD_M5STACK_TAB5) && !defined(BOARD_WAVESHARE_P4_101) && !defined(BOARD_HOST_SCALE1)
-#error "No board target defined. Set BOARD_M5STACK_TAB5 or BOARD_WAVESHARE_P4_101 via platformio.ini build_flags."
+#if !defined(BOARD_M5STACK_TAB5) && !defined(BOARD_WAVESHARE_P4_101) && \
+    !defined(BOARD_WAVESHARE_P4_OLIMEX640) && !defined(BOARD_HOST_SCALE1)
+#error "No board target defined. Set BOARD_M5STACK_TAB5, BOARD_WAVESHARE_P4_101, or BOARD_WAVESHARE_P4_OLIMEX640 via platformio.ini build_flags."
 #endif
 
-#if (defined(BOARD_M5STACK_TAB5) + defined(BOARD_WAVESHARE_P4_101) + defined(BOARD_HOST_SCALE1)) != 1
+#if (defined(BOARD_M5STACK_TAB5) + defined(BOARD_WAVESHARE_P4_101) + \
+     defined(BOARD_WAVESHARE_P4_OLIMEX640) + defined(BOARD_HOST_SCALE1)) != 1
 #error "Multiple board targets defined. Pick exactly one."
 #endif
 
@@ -85,6 +88,32 @@
 
 /* SD card - mounted by the Waveshare BSP at /sd (CONFIG_BSP_SD_MOUNT_POINT).
  * We do not use SPI mode here - the BSP configures SDMMC 4-bit slot 0. */
+#define BOARD_SD_MOUNT_POINT        "/sd"
+
+/* ------------------------------------------------------------------------- */
+/* Waveshare ESP32-P4-WIFI6 + Olimex MIPI-LCD2.8-640x480 (ST7701S)           */
+/* ------------------------------------------------------------------------- */
+#elif defined(BOARD_WAVESHARE_P4_OLIMEX640)
+
+#define BOARD_NAME                  "Waveshare P4 + Olimex 640x480"
+
+/* Physical display after 90-degree rotation of the 480x640 portrait panel */
+#define BOARD_DISPLAY_WIDTH         640
+#define BOARD_DISPLAY_HEIGHT        480
+
+/* Mac emulated framebuffer - native 1:1 on the 640x480 panel */
+#define BOARD_MAC_SCREEN_WIDTH      640
+#define BOARD_MAC_SCREEN_HEIGHT     480
+#define BOARD_PIXEL_SCALE           1
+
+/* Tile grid - 20x12 = 240 tiles (see the Tab5 note on tile width) */
+#define BOARD_TILE_WIDTH            32
+#define BOARD_TILE_HEIGHT           40
+#define BOARD_TILES_X               (BOARD_MAC_SCREEN_WIDTH  / BOARD_TILE_WIDTH)  /* 20 */
+#define BOARD_TILES_Y               (BOARD_MAC_SCREEN_HEIGHT / BOARD_TILE_HEIGHT) /* 12 */
+
+/* SD card - the Waveshare board's SDMMC slot, mounted at /sd by the
+ * shared SD bring-up (see src/board/waveshare/board_sd_waveshare.cpp). */
 #define BOARD_SD_MOUNT_POINT        "/sd"
 
 /* ------------------------------------------------------------------------- */

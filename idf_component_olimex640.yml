@@ -1,0 +1,28 @@
+## IDF Component Manager manifest for the Waveshare ESP32-P4-WIFI6 +
+## Olimex MIPI-LCD2.8-640x480 (ST7701S) build.
+##
+## Same board as the Waveshare 10.1" target (so the BSP, codec, and touch
+## components come from idf_component_waveshare.yml), plus the ST7701S
+## panel driver that the Olimex display bring-up in src/board/olimex640/
+## uses directly (no BSP display path).
+##
+## Arduino-ESP32 from pioarduino 55.x already ships esp_wifi_remote and
+## esp_hosted as part of its bundled libs, so we do not need to re-declare
+## those here (doing so forces a recompile of the Arduino framework).
+dependencies:
+  idf:
+    version: ">=5.5"
+  espressif/esp_codec_dev:
+    version: "~1.5"
+  espressif/esp_lcd_touch_gt911:
+    version: "^1"
+  espressif/esp_lcd_jd9365:
+    version: "*"
+  # The ST7701S driver is vendored under lib/esp_lcd_st7701/ (PlatformIO
+  # auto-discovers it there, same as the other LCD/codec drivers); the
+  # registry entry is kept so the manifest mirrors the full component set.
+  espressif/esp_lcd_st7701:
+    version: "^1.1"
+  # The pre-boot "USB Disk" mode uses Arduino's bundled TinyUSB (via the
+  # USBMSC class in the arduino-esp32 core), so no managed component
+  # dependency is needed for it.

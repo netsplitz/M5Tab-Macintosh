@@ -10,6 +10,8 @@ keep per-env manifests next to platformio.ini and copy the right one into
 Expected layout:
     idf_component_tab5.yml        -> minimal (no extra components)
     idf_component_waveshare.yml   -> Waveshare BSP + codec + touch + panel
+    idf_component_olimex640.yml   -> Waveshare components + ST7701S panel
+                                     driver for the Olimex 640x480 combo
 
 The script is idempotent: it only writes when the content actually differs.
 """
@@ -23,7 +25,9 @@ ENV_NAME = env.get("PIOENV")  # noqa: F821
 
 TARGET = os.path.join(PROJECT_DIR, "idf_component.yml")
 
-if ENV_NAME.startswith("waveshare_p4_101"):
+if ENV_NAME.startswith("waveshare_p4_olimex"):
+    SOURCE_NAME = "idf_component_olimex640.yml"
+elif ENV_NAME.startswith("waveshare_p4_101"):
     SOURCE_NAME = "idf_component_waveshare.yml"
 elif ENV_NAME.startswith("esp32p4_pioarduino"):
     SOURCE_NAME = "idf_component_tab5.yml"

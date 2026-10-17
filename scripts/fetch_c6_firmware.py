@@ -1,7 +1,8 @@
 """Fetch the ESP-Hosted ESP32-C6 slave firmware and embed it into flash.
 
 This script runs as a PlatformIO pre-build step. It only has any effect
-for the Waveshare build (``BOARD_WAVESHARE_P4_101`` defined) - the Tab5
+for the Waveshare-family builds (``BOARD_WAVESHARE_P4_101`` or
+``BOARD_WAVESHARE_P4_OLIMEX640`` defined) - the Tab5
 doesn't use esp-hosted / esp_wifi_remote, so baking a 1.2MB blob there
 would just waste flash.
 

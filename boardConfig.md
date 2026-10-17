@@ -7,6 +7,7 @@ tree. Pick the PlatformIO env that matches your hardware:
 |-------------------------------------------------|------------------------|-----------------|
 | M5Stack Tab5                                    | `esp32p4_pioarduino`   | See below       |
 | Waveshare ESP32-P4-WIFI6-Touch-LCD-10.1         | `waveshare_p4_101`     | [docs/waveshare/README.md](docs/waveshare/README.md) |
+| Waveshare ESP32-P4-WIFI6 + Olimex 2.8" MIPI     | `waveshare_p4_olimex640` | See below      |
 
 ## M5Stack Tab5
 
@@ -310,3 +311,54 @@ coordinate rotation required to drive the panel at its native portrait resolutio
 - [Product page](https://www.waveshare.com/esp32-p4-wifi6-touch-lcd-7-8-10.1.htm)
 - [Waveshare docs](https://docs.waveshare.com/ESP32-P4-WIFI6-Touch-LCD-X)
 - [Waveshare-ESP32-components on GitHub](https://github.com/waveshareteam/Waveshare-ESP32-components)
+
+---
+
+## Waveshare ESP32-P4-WIFI6 + Olimex MIPI-LCD2.8-640x480 (ST7701S)
+
+### Overview
+
+A Waveshare ESP32-P4-WIFI6 board (same ESP32-P4 + ESP32-C6 family as the
+10.1" target) paired with an external [Olimex MIPI-LCD2.8-640x480](https://www.olimex.com/Products/Modules/MIPI/MIPI-LCD2.8-640x480)
+MIPI-DSI display module. The on-board 10.1" JD9365 panel is replaced by
+the Olimex module, which uses an ST7701S controller. Supported by the
+`waveshare_p4_olimex640` PlatformIO env.
+
+### Display
+
+- **Resolution**: 640 x 480 (portrait 480 x 640 native, rotated 90 degrees
+  in software by the shared surface layer)
+- **Driver**: ST7701S over 1-lane MIPI-DSI @ 500 Mbps, 16 MHz DPI clock,
+  RGB565 frame buffer (600 KB PSRAM)
+- **D-PHY power**: on-chip LDO channel 3 @ 2.5 V (acquired at bring-up)
+- **Reset / backlight**: none controllable on this module profile -
+  `BoardDisplay_SetBacklight()` is a no-op and the power layer reports a
+  fixed backlight
+- **Touch**: none - input is USB HID host + on-screen keyboard
+- **Panel init sequence**: the Olimex module's vendor sequence lives in
+  [src/board/olimex640/board_display_olimex640.cpp](src/board/olimex640/board_display_olimex640.cpp);
+  if a different ST7701S module is used, only `lcd_init_cmds` there needs
+  to change
+
+### Mac screen
+
+640 x 480 at `PIXEL_SCALE` 1 (native 1:1 on the panel) - this is the first
+shipping board that exercises the one-to-one tile path
+(`writePanelIndexedTile1x` in [src/board/panel_surface.h](src/board/panel_surface.h)).
+Tile grid is 20 x 12 (32 x 40 tiles, 240 total).
+
+### Board (audio / SD / WiFi)
+
+Identical to the Waveshare 10.1" board - ES8311 audio, SDMMC microSD at
+`/sd`, ESP32-C6 WiFi 6 co-processor, USB host - so the `src/board/waveshare/`
+sources for audio, SD, keyboard, and WiFi are reused unmodified; only the
+display, touch, and power hooks come from [src/board/olimex640/](src/board/olimex640/).
+The C6 slave firmware blob is fetched and embedded the same way as for
+`waveshare_p4_101` (see [scripts/fetch_c6_firmware.py](scripts/fetch_c6_firmware.py)).
+
+### Panel init reference
+
+The video timings, lane rate, LDO channel, and ST7701S vendor init
+sequence are taken from the standalone `esp32st7701s` reference project
+(ESP32-P4 + Olimex WLK2802MIPI-15P-V2 480x640 profile), ported to RGB565
+to match the shared panel surface.

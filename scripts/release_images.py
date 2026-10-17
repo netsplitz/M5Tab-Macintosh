@@ -8,6 +8,8 @@ TARGETS = {
     "esp32p4_pioarduino_rev3": "M5Tab-Macintosh-Rev3",
     "waveshare_p4_101": "M5Tab-Macintosh-Waveshare-P4-10.1",
     "waveshare_p4_101_rev3": "M5Tab-Macintosh-Waveshare-P4-10.1-Rev3",
+    "waveshare_p4_olimex640": "M5Tab-Macintosh-Waveshare-P4-Olimex-640x480",
+    "waveshare_p4_olimex640_rev3": "M5Tab-Macintosh-Waveshare-P4-Olimex-640x480-Rev3",
 }
 
 

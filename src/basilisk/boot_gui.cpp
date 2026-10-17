@@ -1851,7 +1851,7 @@ bool BootGUI_Init(void)
     // `esp32c6-v<X.Y.Z>.bin` blob into the slave and reboot so WiFi
     // comes up working. On Tab5 BoardWifi_IsCoprocessorFirmwareOutdated
     // is a no-op stub so the whole block resolves to a cheap skip.
-#if defined(BOARD_WAVESHARE_P4_101)
+#if defined(BOARD_WAVESHARE_P4_101) || defined(BOARD_WAVESHARE_P4_OLIMEX640)
     initWiFi();
     runC6FirmwareUpdateIfNeeded();
 #endif

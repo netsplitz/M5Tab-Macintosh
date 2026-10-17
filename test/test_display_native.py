@@ -32,6 +32,11 @@ class DisplayNativeTests(unittest.TestCase):
         self.compile_run("test/test_display_pipeline.cpp", "BOARD_WAVESHARE_P4_101", (
             "src/board/board_display_surface.cpp", "src/board/mini_gfx/mini_gfx.cpp"))
 
+    def test_olimex640_display_pipeline(self):
+        # 640x480 / PIXEL_SCALE 1 geometry through the Olimex board macro.
+        self.compile_run("test/test_display_pipeline.cpp", "BOARD_WAVESHARE_P4_OLIMEX640", (
+            "src/board/board_display_surface.cpp", "src/board/mini_gfx/mini_gfx.cpp"))
+
     def test_scale1_display_pipeline(self):
         self.compile_run("test/test_display_pipeline.cpp", "BOARD_HOST_SCALE1", (
             "src/board/board_display_surface.cpp", "src/board/mini_gfx/mini_gfx.cpp"))
@@ -48,3 +53,7 @@ class DisplayNativeTests(unittest.TestCase):
 
     def test_concurrent_input_claims(self):
         self.compile_run("test/test_input_claims.cpp", "BOARD_M5STACK_TAB5")
+
+
+if __name__ == "__main__":
+    unittest.main()
